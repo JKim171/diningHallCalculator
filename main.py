@@ -33,7 +33,17 @@ if __name__ == '__main__':
     fourLakesButton = ttk.Button(diningHallButtonFrame, text="Four Lakes Market", bootstyle="info-toolbutton")
     fourLakesButton.pack(side="left", padx=20)
 
+    timeFrame = tk.Frame(root, padx=20, pady=20)
+    timeFrame.pack(side="top", anchor="nw")
+
+    breakfastButton = ttk.Button(timeFrame, text = "Breakfast", bootstyle="info-toolbutton")
+    breakfastButton.pack(side="left", padx=20)
+
+    lunchButton = ttk.Button(timeFrame, text = "Lunch", bootstyle = "info-toollbutton")
+    lunchButton.pack(side="left", padx=20)
+
+    dinnerButton = ttk.Button(timeFrame, text = "Dinner", bootstyle = "info-toollbutton")
+    dinnerButton.pack(side="left", padx=20)
+
     root.mainloop()
-
-
-
+    
