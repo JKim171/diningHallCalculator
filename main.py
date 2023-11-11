@@ -3,7 +3,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
 if __name__ == '__main__':
-    root = tk.Tk()
+    root = ttk.Window(title="Dining Hall Calculator", themename="solar", size=(1920,1080))
 
     b1 = ttk.Button(root, text="Button 1", bootstyle=SUCCESS)
     b1.pack(side=LEFT, padx=5, pady=10)
@@ -12,4 +12,5 @@ if __name__ == '__main__':
     b2.pack(side=LEFT, padx=5, pady=10)
 
     root.mainloop()
+
 
