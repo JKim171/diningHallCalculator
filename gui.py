@@ -1,6 +1,10 @@
 import tkinter as tk
-from tkinter import font, Frame
+from tkinter import *
+from tkinter import font
 import ttkbootstrap as ttk
+
+from Item import Item
+from scrape import Scrape
 
 
 class GUI:
@@ -14,11 +18,81 @@ class GUI:
         time = [False, False, False]
         preferencesKey = [ "Vegan", "Vegetarian", "Halal" ]
         preferences = [False, False, False]
-        allergiesKey = [ "Dairy", "Egg", "Wheat", "Sesame", "Corn", "Soy", "Coconut", "Nuts", "Milk" ]
-        allergies = [False, False, False, False, False, False, False, False, False]
-
+        allergiesKey = [ "Dairy", "Egg", "Wheat", "Sesame", "Corn", "Soy", "Coconut", "Nuts", "Fish", "Milk" ]
+        allergies = [False, False, False, False, False, False, False, False, False, False]
+        selectedLocation = -1
         root = ttk.Window(title="Dining Hall Calculator", themename="darkly", size=(1920, 1080))
+        allMarkets = []
+        newWindow = None
 
+        currentFrame = None
+
+        def createItems(itemList, newWindow, itemFrame):
+            #itemFrame.destroy()
+
+            itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
+            itemsFrame.pack(side="top", anchor="nw")
+            itemTopLevelFrame = tk.Frame(itemsFrame, padx=20, pady=0)
+            itemTopLevelFrame.pack(side="top", anchor="nw")
+            itemMiddleLevelFrame = tk.Frame(itemsFrame, padx=20, pady=0)
+            itemMiddleLevelFrame.pack(side="top", anchor="nw")
+            itemBottomLevelFrame = tk.Frame(itemsFrame, padx=20, pady=0)
+            itemBottomLevelFrame.pack(side="top", anchor="nw")
+
+            frame = itemsFrame
+
+
+
+            allItemFrames = []
+            for i in range(len(itemList)):
+                item = itemList[i]
+                if i < 9:
+                    if i < 3:
+                        allItemFrames.append(tk.Frame(itemTopLevelFrame, padx=20, pady=0))
+                        allItemFrames[i].pack(side="left", anchor="nw")
+                    elif i < 6:
+                        allItemFrames.append(tk.Frame(itemMiddleLevelFrame, padx=20, pady=0))
+                        allItemFrames[i].pack(side="left", anchor="nw")
+                    else:
+                        allItemFrames.append(tk.Frame(itemBottomLevelFrame, padx=20, pady=0))
+                        allItemFrames[i].pack(side="left", anchor="nw")
+
+                    nameLabel = ttk.Label(allItemFrames[i], text=item.getName(), bootstyle="solar",
+                                          font=font.Font(family="Arial", size=30))
+                    nameLabel.pack(side="top", anchor="nw")
+                    calLabel = ttk.Label(allItemFrames[i], text=str(item.getCalories()) + " Calories",
+                                         bootstyle="solar",
+                                         font=font.Font(family="Arial", size=25))
+                    calLabel.pack(side="top", anchor="nw")
+                    proteinLabel = ttk.Label(allItemFrames[i], text=str(item.getProtein()) + "g Protein",
+                                             bootstyle="solar",
+                                             font=font.Font(family="Arial", size=25))
+                    proteinLabel.pack(side="top", anchor="nw")
+            return frame
+
+        def activateNW(button, locations):
+            button.configure(bootstyle="info-toolbutton", command=lambda: deactivateNW(button, locations))
+            bText = button.cget("text")
+            for i in range(len(locations)):
+                if bText == locations[i].cget("text"):
+                    selectedLocation = i
+                    createItems(allMarkets[selectedLocation], newWindow, None)
+                    #setItems(selectedLocation)
+                    for a in range(len(locations)):
+                        if a!=i:
+                            deactivateNW(locations[a], locations)
+        def deactivateNW(button, locations):
+            button.configure(bootstyle="info-outline", command=lambda: activateNW(button, locations))
+            bText = button.cget("text")
+
+        def setItems(selectedLocation):
+            global currentFrame
+            itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
+            itemsFrame.pack(side="top", anchor="nw")
+            if currentFrame == None:
+                currentFrame = createItems(allMarkets[selectedLocation], newWindow, itemsFrame)
+            else:
+                currentFrame = createItems(allMarkets[selectedLocation], newWindow, currentFrame)
         def activate(button):
             button.configure(bootstyle="info-toolbutton", command=lambda: deactivate(button))
             # getting button values
@@ -71,6 +145,31 @@ class GUI:
                 time[2] = False
 
         def submit(minCaloriesEntry, maxCaloriesEntry, minProteinEntry, maxProteinEntry):
+            itemList = []
+            def comparePref(item, prefArray):
+                for i in range(len(item.getPreferences())):
+                    if (item.getPreferences()[i] == True) and (prefArray[i] != True):
+                        return False
+                return True
+
+            def compareAllergies(item, allergiesArray):
+                for i in range(len(item.getPreferences())):
+                    if (item.getAllergies()[i] == True) and (allergiesArray[i] == True):
+                        return False
+                return True
+
+            def compareCalories(item):
+                if item.getCalories() > minCalories and item.getCalories < maxCalories:
+                    return True
+                else:
+                    return False
+
+            def compareProtein(item):
+                if item.getProtein() > minProtein and item.getProtein < maxProtein:
+                    return True
+                else:
+                    return False
+
             try:
                 minCalories = int(minCaloriesEntry.get())
                 maxCalories = int(maxCaloriesEntry.get())
@@ -78,10 +177,10 @@ class GUI:
                 maxProtein = int(maxProteinEntry.get())
             except ValueError:
                 print("Please input a valid integer")
-                minCalories=0
-                maxCalories=0
-                minProtein=0
-                maxProtein=0
+                minCalories = 0
+                maxCalories = 0
+                minProtein = 0
+                maxProtein = 0
             calories = [minCalories, maxCalories]
             protein = [minProtein, maxProtein]
             preferences = [veganInt.get() == 1, vegetarianInt.get() == 1, halalInt.get() == 1]
@@ -91,14 +190,74 @@ class GUI:
                          cornInt.get() == 1, soyInt.get() == 1, coconutInt.get() == 1, nutsInt.get() == 1,
                          milkInt.get() == 1]
             allRestrictions = [locations, time, calories, protein, preferences, allergies]
+            rhetasScrape = None
+            gordonScrape = None
+            lowellScrape = None
+            lizScrape = None
+            carsonScrape = None
+            flakesScrape = None
+            if locations[0] == True:
+                rhetasScrape = Scrape.runScrape('https://wisc-housingdining.nutrislice.com/menu/rhetas-market/lunch/')
+                rhetasScrape = rhetasScrape[1:]
+                for i, n in enumerate(time):
+                    if n:
+                        rhetasScrape = rhetasScrape[i]
+                for i, n in enumerate(rhetasScrape):
+                    if (comparePref(rhetasScrape[i], preferences)):
+                        if (compareAllergies(rhetasScrape[i], allergies)):
+                            if (n.getCalories() >= calories[0] and n.getCalories() <= calories[1]):
+                                if (n.getProtein() >= protein[0] and n.getProtein() <= protein[1]):
+                                    itemList.append(n)
+                allMarkets.append(itemList)
+            if locations[1] == True:
+                gordonScrape = Scrape.runScrape(
+                    'https://wisc-housingdining.nutrislice.com/menu/gordon-avenue-market/breakfast/')
+                for i, n in enumerate(time):
+                    if n:
+                        gordonScrape = gordonScrape[i]
+                for i, n in enumerate(gordonScrape):
+                    if (comparePref(gordonScrape[i], preferences)):
+                        if (compareAllergies(gordonScrape[i], allergies)):
+                            if (n.getCalories() >= calories[0] and n.getCalories() <= calories[1]):
+                                if (n.getProtein() >= protein[0] and n.getProtein() <= protein[1]):
+                                    itemList.append(n)
+                allMarkets.append(itemList)
+            if locations[2] == True:
+                lowellScrape = None
+            if locations[3] == True:
+                lizScrape = None
+            if locations[4] == True:
+                carsonScrape = Scrape.runScrape('https://wisc-housingdining.nutrislice.com/menu/carsons-market/lunch/')
+                carsonScrape = carsonScrape[1:]
+                for i, n in enumerate(time):
+                    if n:
+                        carsonScrape = carsonScrape[i]
+                for i, n in enumerate(carsonScrape):
+                    if (comparePref(carsonScrape[i], preferences)):
+                        if (compareAllergies(carsonScrape[i], allergies)):
+                            if (n.getCalories() >= calories[0] and n.getCalories() <= calories[1]):
+                                if (n.getProtein() >= protein[0] and n.getProtein() <= protein[1]):
+                                    itemList.append(n)
+                allMarkets.append(itemList)
+            if locations[5] == True:
+                flakesScrape = Scrape.runScrape(
+                    'https://wisc-housingdining.nutrislice.com/menu/four-lakes-market/breakfast/')
+                for i, n in enumerate(time):
+                    if n:
+                        flakesScrape = flakesScrape[i]
+                for i, n in enumerate(flakesScrape):
+                    if (comparePref(flakesScrape[i], preferences)):
+                        if (compareAllergies(flakesScrape[i], allergies)):
+                            if (n.getCalories() >= calories[0] and n.getCalories() <= calories[1]):
+                                if (n.getProtein() >= protein[0] and n.getProtein() <= protein[1]):
+                                    itemList.append(n)
+                allMarkets.append(itemList)
+            print("this is the itemList below")
+            print(allMarkets)
 
-            #destroy all of the stuff we don't need
-            root.destroy()
 
-            #convert things to english
-
-
-            newWindow = ttk.Window(root, size=(1920, 1080))
+            newWindow = Toplevel(root)
+            newWindow.geometry('3000x1000')
 
             topFrame = tk.Frame(newWindow, padx=20, pady=0)
             topFrame.pack(side="top", anchor="nw")
@@ -154,7 +313,37 @@ class GUI:
                                           font=font.Font(family="Arial", size=34))
             yourProteinLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
-            newWindow.mainloop()
+            hallsFrame = tk.Frame(newWindow, padx=20, pady=0)
+            hallsFrame.pack(side="top", anchor="nw")
+
+            rhetasButtonNew = ttk.Button(hallsFrame, text="Rheta's Market", bootstyle="info-outline",
+                                         command=lambda: activateNW(rhetasButtonNew, locationButtons))
+            gordonButtonNew = ttk.Button(hallsFrame, text="Gordon Avenue Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(gordonButtonNew, locationButtons))
+            lowellButtonNew = ttk.Button(hallsFrame, text="Lowell Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(lowellButtonNew, locationButtons))
+            lizButtonNew = ttk.Button(hallsFrame, text="Liz's Market",bootstyle="info-outline",
+                                   command=lambda: activateNW(lizButtonNew, locationButtons))
+            carsonButtonNew = ttk.Button(hallsFrame, text="Carson's Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(carsonButtonNew, locationButtons))
+            fourLakesButtonNew = ttk.Button(hallsFrame, text="Four Lakes Market",bootstyle="info-outline",
+                                         command=lambda: activateNW(fourLakesButtonNew, locationButtons))
+            locationButtons = [rhetasButtonNew, gordonButtonNew, lowellButtonNew, lizButtonNew, carsonButtonNew, fourLakesButtonNew]
+
+            #will change for most options
+            for i in range(len(locations)):
+                if locations[i]:
+                    locationButtons[i].pack(side="left", padx=20)
+
+            itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
+            itemsFrame.pack(side="top", anchor="nw")
+            currentFrame  = itemsFrame
+
+
+
+
+
+
 
 
 
@@ -170,7 +359,6 @@ class GUI:
             print(allergies)
             print(protein)
             print(calories)
-
 
 
         diningHallFrame = tk.Frame(root, padx=20, pady=20)
@@ -207,6 +395,7 @@ class GUI:
         fourLakesButton = ttk.Button(diningHallButtonFrame, text="Four Lakes Market", bootstyle="info-outline",
                                      command=lambda: activate(fourLakesButton))
         fourLakesButton.pack(side="left", padx=20)
+
 
         timeLabelFrame = tk.Frame(root, padx=20, pady=20)
         timeLabelFrame.pack(side="top", anchor="nw")
@@ -336,7 +525,7 @@ class GUI:
 
         fishInt = tk.IntVar()
         fish = tk.Checkbutton(allergiesFrame, text="Fish", font=font.Font(family="Arial", size=20), variable=fishInt)
-        nuts.pack(side="left", padx=20)
+        fish.pack(side="left", padx=20)
 
         milkInt = tk.IntVar()
         milk = tk.Checkbutton(allergiesFrame, text="Milk", font=font.Font(family="Arial", size=20), variable=milkInt)
