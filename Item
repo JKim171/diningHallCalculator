@@ -1,0 +1,47 @@
+class Item:
+
+
+    def __init__(self):
+        self.name = "undifined"
+        self.calories = -1
+        self.protein = -1
+        # [ Vegan, Vegetarian, Halal ]
+        self.preferences = [False, False, False]
+        # [ Dairy, Egg, Wheat, Sesame, Corn, Soy, Coconut, Nuts, Milk ]
+        self.allergies = [False, False, False, False, False, False, False, False, False]
+
+    def getName(self):
+        return self.name
+
+    def getCalories(self):
+        return self.calories
+
+    def getProtein(self):
+        return self.protein
+
+    def getPreferences(self):
+        return self.preferences
+
+    def getAllergies(self):
+        return self.allergies
+
+    def setName(self, name):
+        self.name = name
+
+    def setCalories(self, calories):
+        self.calories = calories
+
+    def setProtein(self, protein):
+        self.protein = protein
+
+    def setPreferences(self, preferences):
+        self.preferences = preferences
+
+    def setPreferences(self, preference, index):
+        self.preferences[index]=preference
+
+    def setAllergies(self, allergies):
+        self.allergies = allergies
+
+    def setAllergies(self, allergy, index):
+        self.allergies[index] = allergy
