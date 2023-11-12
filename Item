@@ -5,6 +5,7 @@ class Item:
         self.name = "undifined"
         self.calories = -1
         self.protein = -1
+        self.proteinToCalRatio =0
         # [ Vegan, Vegetarian, Halal ]
         self.preferences = [False, False, False]
         # [ Dairy, Egg, Wheat, Sesame, Corn, Soy, Coconut, Nuts, Milk ]
@@ -30,9 +31,11 @@ class Item:
 
     def setCalories(self, calories):
         self.calories = calories
+        self.updateRatio()
 
     def setProtein(self, protein):
         self.protein = protein
+        self.updateRatio()
 
     def setPreferences(self, preferences):
         self.preferences = preferences
@@ -45,3 +48,6 @@ class Item:
 
     def setAllergies(self, allergy, index):
         self.allergies[index] = allergy
+
+    def updateRatio(self):
+        self.proteinToCalRatio = self.calories / self.protein
