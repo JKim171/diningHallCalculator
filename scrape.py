@@ -56,7 +56,6 @@ class Scrape:
             hi = driver.find_element(By.CLASS_NAME, 'name').get_attribute("outerHTML")
             for x in range(hi.find(">") + 2, hi.find("<!") - 1):
                 name += hi[x]
-                print(x)
 
             return name
 
