@@ -11,7 +11,7 @@ class Item:
         # [ Dairy, Egg, Wheat, Sesame, Corn, Soy, Coconut, Nuts, Milk ]
         self.allergies = [False, False, False, False, False, False, False, False, False]
 
-    def __init__(self, name, calories, protein, preferences, allergies):
+    def __int__(self, name, calories, protein, preferences, allergies):
         self.name = name
         self.calories = calories
         self.protein = protein
@@ -47,17 +47,17 @@ class Item:
         self.protein = protein
         self.updateRatio()
 
-    def setPreferences(self, preferences):
-        self.preferences = preferences
+    def setPreferences(self, *args):
+        self.preferences = args[0]
 
-    def setPreferences(self, preference, index):
-        self.preferences[index]=preference
+    def setPreferences(self, *args):
+        self.preferences[args[1]]=args[0]
 
-    def setAllergies(self, allergies):
-        self.allergies = allergies
+    def setAllergies(self, *args):
+        self.allergies = args[0]
 
-    def setAllergies(self, allergy, index):
-        self.allergies[index] = allergy
+    def setAllergies(self, *args):
+        self.allergies[args[1]]=args[0]
 
     def updateRatio(self):
         if self.protein!=0 and self.calories!=0:
