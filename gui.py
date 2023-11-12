@@ -1,12 +1,50 @@
 import tkinter as tk
 from tkinter import font
 import ttkbootstrap as ttk
-from ttkbootstrap.constants import *
 
 class GUI:
+
+
     @staticmethod
     def runGUI():
+        #[ Rheta, Gordon, Lowell, Liz, Carson, Flakes ]
+        locations = [False, False, False, False, False, False]
+        #[ Breakfast, Lunch, Dinner ]
+        time = [False, False, False]
         root = ttk.Window(title="Dining Hall Calculator", themename="solar", size=(1920, 1080))
+        def activate(button):
+            button.configure(bootstyle="info-toolbutton", command=lambda: deactivate(button))
+            #getting button values
+            bText = button.cget("text")
+            if bText == "Rheta's Market":
+                locations[0]=True
+            if bText == "Gordon Avenue Market":
+                locations[1]=True
+            if bText == "Lowell Market":
+                locations[2]=True
+            if bText == "Liz's Market":
+                locations[3]=True
+            if bText == "Carson's Market":
+                locations[4]=True
+            if bText == "Four Lakes Market":
+                locations[5]=True
+            if bText == "Breakfast":
+                time[0]=True
+            if bText == "Lunch":
+                time[1]=True
+            if bText == "Dinner":
+                time[2]=True
+        def deactivate(button):
+            button.configure(bootstyle="info-outline", command=lambda: activate(button))
+        def submit(minCaloriesEntry, maxCaloriesEntry, minProteinEntry, maxProteinEntry):
+            try:
+                minCalories = int(minCaloriesEntry.get())
+                maxCalories = int(maxCaloriesEntry.get())
+                minProtein = int(minProteinEntry.get())
+                maxProtein = int(maxProteinEntry.get())
+                print(veganInt.get())
+            except ValueError:
+                print("Please input a valid integer")
 
         diningHallFrame = tk.Frame(root, padx=20, pady=20)
         diningHallFrame.pack(side="top", anchor="nw")
@@ -18,22 +56,23 @@ class GUI:
         diningHallButtonFrame = tk.Frame(root, padx=20, pady=20)
         diningHallButtonFrame.pack(side="top", anchor="nw")
 
-        rhetasButton = ttk.Button(diningHallButtonFrame, text="Rheta's Market", bootstyle="info-toolbutton")
+        rhetaInt = 0
+        rhetasButton = ttk.Button(diningHallButtonFrame, text="Rheta's Market", bootstyle="info-outline", command=lambda: activate(rhetasButton))
         rhetasButton.pack(side="left", padx=20)
 
-        gordonButton = ttk.Button(diningHallButtonFrame, text="Gordon Avenue Market", bootstyle="info-toolbutton")
+        gordonButton = ttk.Button(diningHallButtonFrame, text="Gordon Avenue Market", bootstyle="info-outline", command=lambda: activate(gordonButton))
         gordonButton.pack(side="left", padx=20)
 
-        lowellButton = ttk.Button(diningHallButtonFrame, text="Lowell Market", bootstyle="info-toolbutton")
+        lowellButton = ttk.Button(diningHallButtonFrame, text="Lowell Market", bootstyle="info-outline", command=lambda: activate(lowellButton))
         lowellButton.pack(side="left", padx=20)
 
-        lizButton = ttk.Button(diningHallButtonFrame, text="Liz's Market", bootstyle="info-toolbutton")
+        lizButton = ttk.Button(diningHallButtonFrame, text="Liz's Market", bootstyle="info-outline", command=lambda: activate(lizButton))
         lizButton.pack(side="left", padx=20)
 
-        carsonButton = ttk.Button(diningHallButtonFrame, text="Carson's Market", bootstyle="info-toolbutton")
+        carsonButton = ttk.Button(diningHallButtonFrame, text="Carson's Market", bootstyle="info-outline", command=lambda: activate(carsonButton))
         carsonButton.pack(side="left", padx=20)
 
-        fourLakesButton = ttk.Button(diningHallButtonFrame, text="Four Lakes Market", bootstyle="info-toolbutton")
+        fourLakesButton = ttk.Button(diningHallButtonFrame, text="Four Lakes Market", bootstyle="info-outline", command=lambda: activate(fourLakesButton))
         fourLakesButton.pack(side="left", padx=20)
 
         timeLabelFrame = tk.Frame(root, padx=20, pady=20)
@@ -46,13 +85,13 @@ class GUI:
         timeFrame = tk.Frame(root, padx=20, pady=20)
         timeFrame.pack(side="top", anchor="nw")
 
-        breakfastButton = ttk.Button(timeFrame, text="Breakfast", bootstyle="info-toolbutton")
+        breakfastButton = ttk.Button(timeFrame, text="Breakfast", bootstyle="info-outline", command=lambda: activate(breakfastButton))
         breakfastButton.pack(side="left", padx=20)
 
-        lunchButton = ttk.Button(timeFrame, text="Lunch", bootstyle="info-toolbutton")
+        lunchButton = ttk.Button(timeFrame, text="Lunch", bootstyle="info-outline", command=lambda: activate(lunchButton))
         lunchButton.pack(side="left", padx=20)
 
-        dinnerButton = ttk.Button(timeFrame, text="Dinner", bootstyle="info-toolbutton")
+        dinnerButton = ttk.Button(timeFrame, text="Dinner", bootstyle="info-outline", command=lambda: activate(dinnerButton))
         dinnerButton.pack(side="left", padx=20)
 
         macrosFrame = tk.Frame(root, padx=20, pady=20)
@@ -164,7 +203,8 @@ class GUI:
         milk = tk.Checkbutton(allergiesFrame, text="Milk", font=font.Font(family="Arial", size=20), variable=milkInt)
         milk.pack(side="left", padx=20)
 
-        submitButton = ttk.Button(root, text="Submit", bootstyle="info-toolbutton")
+        submitButton = ttk.Button(root, text="Submit", bootstyle="info-toolbutton", command=lambda: submit(minCaloriesEntry, maxCaloriesEntry, minProteinEntry, maxProteinEntry))
         submitButton.pack(side="left", padx=40)
 
         root.mainloop()
+
