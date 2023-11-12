@@ -50,4 +50,7 @@ class Item:
         self.allergies[index] = allergy
 
     def updateRatio(self):
-        self.proteinToCalRatio = self.calories / self.protein
+        if self.protein!=0 and self.calories!=0:
+            self.proteinToCalRatio = self.protein / self.calories
+        else: 
+            self.proteinToCalRatio = 0
