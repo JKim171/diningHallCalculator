@@ -12,23 +12,22 @@ class GUI:
     @staticmethod
     def runGUI():
 
-        locationsKey = ["Rheta", "Gordon", "Lowell", "Liz", "Carson", "Flakes"]
+        locationsKey = [ "Rheta", "Gordon", "Lowell", "Liz", "Carson", "Flakes" ]
         locations = [False, False, False, False, False, False]
-        timeKey = ["Breakfast", "Lunch", "Dinner"]
+        timeKey = [ "Breakfast", "Lunch", "Dinner" ]
         time = [False, False, False]
-        preferencesKey = ["Vegan", "Vegetarian", "Halal"]
+        preferencesKey = [ "Vegan", "Vegetarian", "Halal" ]
         preferences = [False, False, False]
-        allergiesKey = ["Dairy", "Egg", "Wheat", "Sesame", "Corn", "Soy", "Coconut", "Nuts", "Fish", "Milk"]
+        allergiesKey = [ "Dairy", "Egg", "Wheat", "Sesame", "Corn", "Soy", "Coconut", "Nuts", "Fish", "Milk" ]
         allergies = [False, False, False, False, False, False, False, False, False, False]
         selectedLocation = -1
         root = ttk.Window(title="Dining Hall Calculator", themename="darkly", size=(1920, 1080))
         allMarkets = []
-        newWindow = None
 
         currentFrame = None
 
-        def createItems(itemList):
-            # itemFrame.destroy()
+        def createItems(itemList, newWindow):
+            #itemFrame.destroy()
 
             itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
             itemsFrame.pack(side="top", anchor="nw")
@@ -40,6 +39,8 @@ class GUI:
             itemBottomLevelFrame.pack(side="top", anchor="nw")
 
             frame = itemsFrame
+
+
 
             allItemFrames = []
             for i in range(len(itemList)):
@@ -68,20 +69,19 @@ class GUI:
                     proteinLabel.pack(side="top", anchor="nw")
             return frame
 
-        def activateNW(button, locations):
+        def activateNW(button, locations, newWindow):
             button.configure(bootstyle="info-toolbutton", command=lambda: deactivateNW(button, locations))
             bText = button.cget("text")
             for i in range(len(locations)):
                 if bText == locations[i].cget("text"):
                     selectedLocation = i
-                    createItems(allMarkets[selectedLocation])
-                    # setItems(selectedLocation)
+                    createItems(allMarkets[selectedLocation], newWindow)
+                    #setItems(selectedLocation)
                     for a in range(len(locations)):
-                        if a != i:
+                        if a!=i:
                             deactivateNW(locations[a], locations)
-
         def deactivateNW(button, locations):
-            button.configure(bootstyle="info-outline", command=lambda: activateNW(button, locations))
+            button.configure(bootstyle="info-outline", command=lambda: activateNW(button, locations,newWindow))
             bText = button.cget("text")
 
         def setItems(selectedLocation):
@@ -89,10 +89,9 @@ class GUI:
             itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
             itemsFrame.pack(side="top", anchor="nw")
             if currentFrame == None:
-                currentFrame = createItems(allMarkets[selectedLocation])
+                currentFrame = createItems(allMarkets[selectedLocation], newWindow, itemsFrame)
             else:
-                currentFrame = createItems(allMarkets[selectedLocation])
-
+                currentFrame = createItems(allMarkets[selectedLocation], newWindow, currentFrame)
         def activate(button):
             button.configure(bootstyle="info-toolbutton", command=lambda: deactivate(button))
             # getting button values
@@ -145,9 +144,8 @@ class GUI:
                 time[2] = False
 
         def submit(minCaloriesEntry, maxCaloriesEntry, minProteinEntry, maxProteinEntry):
-            itemList = []
-            newWindow = Toplevel(root)
-            newWindow.geometry('3000x1000')
+            global newWindow
+            itemList = []   
             def comparePref(item, prefArray):
                 for i in range(len(item.getPreferences())):
                     if (item.getPreferences()[i] == True) and (prefArray[i] != True):
@@ -258,6 +256,8 @@ class GUI:
             print(allMarkets)
 
 
+            newWindow = Toplevel(root)
+            newWindow.geometry('3000x1000')
 
             topFrame = tk.Frame(newWindow, padx=20, pady=0)
             topFrame.pack(side="top", anchor="nw")
@@ -269,78 +269,90 @@ class GUI:
             bottomFrame.pack(side="top", anchor="nw")
 
             titleLabel = tk.Label(topFrame, text="Your Preferences: ",
-                                  font=font.Font(family="Arial", size=34))
+                                        font=font.Font(family="Arial", size=34))
             titleLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
-            timeString = ""
-            for i in range(len(time)):
+            timeString =""
+            for i in range (len(time)):
                 if time[i]:
                     timeString = timeKey[i]
 
             yourTimeLabel = tk.Label(topFrame, text=timeString,
-                                     font=font.Font(family="Arial", size=34))
+                                            font=font.Font(family="Arial", size=34))
             yourTimeLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
             preferencesString = ""
-            for i in range(len(preferences)):
+            for i in range (len(preferences)):
                 if preferences[i]:
                     preferencesString += preferencesKey[i] + ", "
             preferencesString = preferencesString[:-2]
 
             yourPreferencesLabel = tk.Label(topFrame, text=preferencesString,
-                                            font=font.Font(family="Arial", size=34))
+                                     font=font.Font(family="Arial", size=34))
             yourPreferencesLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
             allergiesString = ""
             firstAdd = True
-            for i in range(len(allergies)):
+            for i in range (len(allergies)):
                 if allergies[i]:
                     if firstAdd:
                         allergiesString += "NO "
-                        firstAdd = False
+                        firstAdd=False
                     allergiesString += allergiesKey[i] + ", "
             allergiesString = allergiesString[:-2]
 
             yourAllergiesLabel = tk.Label(middleFrame, text=allergiesString,
-                                          font=font.Font(family="Arial", size=34))
+                                            font=font.Font(family="Arial", size=34))
             yourAllergiesLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
-            yourCaloriesLabel = tk.Label(bottomFrame, text=str(calories[0]) + " - " + str(calories[1]) + " Calories",
-                                         font=font.Font(family="Arial", size=34))
+            yourCaloriesLabel = tk.Label(bottomFrame, text=str(calories[0])+ " - " +str(calories[1]) + " Calories",
+                                          font=font.Font(family="Arial", size=34))
             yourCaloriesLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
-            yourProteinLabel = tk.Label(bottomFrame, text=str(protein[0]) + "g - " + str(protein[1]) + "g Protein",
-                                        font=font.Font(family="Arial", size=34))
+            yourProteinLabel = tk.Label(bottomFrame, text=str(protein[0]) + "g - " +str(protein[1]) + "g Protein",
+                                          font=font.Font(family="Arial", size=34))
             yourProteinLabel.pack(side="left", padx=40, anchor="nw", pady=20)
 
             hallsFrame = tk.Frame(newWindow, padx=20, pady=0)
             hallsFrame.pack(side="top", anchor="nw")
 
             rhetasButtonNew = ttk.Button(hallsFrame, text="Rheta's Market", bootstyle="info-outline",
-                                         command=lambda: activateNW(rhetasButtonNew, locationButtons))
-            gordonButtonNew = ttk.Button(hallsFrame, text="Gordon Avenue Market", bootstyle="info-outline",
-                                         command=lambda: activateNW(gordonButtonNew, locationButtons))
-            lowellButtonNew = ttk.Button(hallsFrame, text="Lowell Market", bootstyle="info-outline",
-                                         command=lambda: activateNW(lowellButtonNew, locationButtons))
-            lizButtonNew = ttk.Button(hallsFrame, text="Liz's Market", bootstyle="info-outline",
-                                      command=lambda: activateNW(lizButtonNew, locationButtons))
-            carsonButtonNew = ttk.Button(hallsFrame, text="Carson's Market", bootstyle="info-outline",
-                                         command=lambda: activateNW(carsonButtonNew, locationButtons))
-            fourLakesButtonNew = ttk.Button(hallsFrame, text="Four Lakes Market", bootstyle="info-outline",
-                                            command=lambda: activateNW(fourLakesButtonNew, locationButtons))
-            locationButtons = [rhetasButtonNew, gordonButtonNew, lowellButtonNew, lizButtonNew, carsonButtonNew,
-                               fourLakesButtonNew]
+                                         command=lambda: activateNW(rhetasButtonNew, locationButtons, newWindow))
+            gordonButtonNew = ttk.Button(hallsFrame, text="Gordon Avenue Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(gordonButtonNew, locationButtons,newWindow))
+            lowellButtonNew = ttk.Button(hallsFrame, text="Lowell Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(lowellButtonNew, locationButtons,newWindow))
+            lizButtonNew = ttk.Button(hallsFrame, text="Liz's Market",bootstyle="info-outline",
+                                   command=lambda: activateNW(lizButtonNew, locationButtons,newWindow))
+            carsonButtonNew = ttk.Button(hallsFrame, text="Carson's Market",bootstyle="info-outline",
+                                      command=lambda: activateNW(carsonButtonNew, locationButtons,newWindow))
+            fourLakesButtonNew = ttk.Button(hallsFrame, text="Four Lakes Market",bootstyle="info-outline",
+                                         command=lambda: activateNW(fourLakesButtonNew, locationButtons,newWindow))
+            locationButtons = [rhetasButtonNew, gordonButtonNew, lowellButtonNew, lizButtonNew, carsonButtonNew, fourLakesButtonNew]
 
-            # will change for most options
+            #will change for most options
             for i in range(len(locations)):
                 if locations[i]:
                     locationButtons[i].pack(side="left", padx=20)
 
             itemsFrame = tk.Frame(newWindow, padx=20, pady=0)
             itemsFrame.pack(side="top", anchor="nw")
-            currentFrame = itemsFrame
+            currentFrame  = itemsFrame
 
-            # debug
+
+
+
+
+
+
+
+
+
+
+
+
+
+            #debug
             print(locations)
             print(time)
             print(preferences)
@@ -348,8 +360,10 @@ class GUI:
             print(protein)
             print(calories)
 
+
         diningHallFrame = tk.Frame(root, padx=20, pady=20)
         diningHallFrame.pack(side="top", anchor="nw")
+
 
         diningHallLabel = ttk.Label(diningHallFrame, text="Dining Hall:", bootstyle="solar",
                                     font=font.Font(family="Arial", size=34))
@@ -381,6 +395,7 @@ class GUI:
         fourLakesButton = ttk.Button(diningHallButtonFrame, text="Four Lakes Market", bootstyle="info-outline",
                                      command=lambda: activate(fourLakesButton))
         fourLakesButton.pack(side="left", padx=20)
+
 
         timeLabelFrame = tk.Frame(root, padx=20, pady=20)
         timeLabelFrame.pack(side="top", anchor="nw")
@@ -521,3 +536,5 @@ class GUI:
                                                          maxProteinEntry))
         submitButton.pack(side="left", padx=40)
         root.mainloop()
+
+
