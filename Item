@@ -47,17 +47,11 @@ class Item:
         self.protein = protein
         self.updateRatio()
 
-    def setPreferences(self, *args):
-        self.preferences = args[0]
+    def setPreferences(self, preferences):
+        self.preferences = preferences
 
-    def setPreferences(self, *args):
-        self.preferences[args[1]]=args[0]
-
-    def setAllergies(self, *args):
-        self.allergies = args[0]
-
-    def setAllergies(self, *args):
-        self.allergies[args[1]]=args[0]
+    def setAllergies(self, allergies):
+        self.allergies = allergies
 
     def updateRatio(self):
         if self.protein!=0 and self.calories!=0:
