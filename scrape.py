@@ -1,8 +1,8 @@
 from selenium import webdriver
 import time
-
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-
+import requests
 
 class Scrape:
     @staticmethod
@@ -19,4 +19,11 @@ class Scrape:
         # Close the browser
         element = driver.find_element(By.CSS_SELECTOR, '[data-testid="018026bcdb3445168421175d9ae4dd06"]')
         element.click()
+        driver.implicitly_wait(10)
+        element = driver.find_element(By.CLASS_NAME, 'content-container')
+        element.click()
+        elementSource = driver.find_element(By.ID, 'content').get_attribute("outerHTML")
+        print(elementSource)
+        print(elementSource.find("Avocado"))
+        #r = requests.get()
         time.sleep(100)
