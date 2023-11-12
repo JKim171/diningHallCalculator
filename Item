@@ -1,10 +1,11 @@
 class Item:
 
+
     def __init__(self):
         self.name = "undefined"
         self.calories = -1
         self.protein = -1
-        self.proteinToCalRatio = 0
+        self.proteinToCalRatio =0
         # [ Vegan, Vegetarian, Halal ]
         self.preferences = [False, False, False]
         # [ Dairy, Egg, Wheat, Sesame, Corn, Soy, Coconut, Nuts, Milk ]
@@ -53,12 +54,12 @@ class Item:
         self.allergies = allergies
 
     def updateRatio(self):
-        if self.protein != 0 and self.calories != 0:
+        if self.protein!=0 and self.calories!=0:
             self.proteinToCalRatio = self.protein / self.calories
         else:
             self.proteinToCalRatio = 0
 
     def __str__(self):
         return self.name + ":  Cal:" + str(self.calories) + "  Protein:" + str(
-            self.protein) + "  Ratio:" + str(self.proteinToCalRatio)+ "  Preferences:" + str(
+            self.protein) + "  Ratio:" + str(self.proteinToCalRatio) + "  Preferences:" + str(
             self.preferences) + "  Allergies:" + str(self.allergies)
